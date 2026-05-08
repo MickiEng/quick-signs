@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Quick-fire clinical signs quiz for NCLEX and NP board exam prep. Test your knowledge of 18 essential clinical signs.">
+<title>Clinical Signs Quiz</title>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F4EF;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE8;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1A1814;
+    --text-muted: #7A756E;
+    --text-hint: #B0AB A3;
+    --accent: #2D5BE3;
+    --accent-bg: #EEF2FD;
+    --green: #1A6B45;
+    --green-bg: #E8F5EE;
+    --red: #B5341A;
+    --red-bg: #FDEEE9;
+    --amber: #925E0A;
+    --amber-bg: #FDF3E3;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141210;
+      --surface: #1E1C19;
+      --surface2: #262420;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #F0EDE8;
+      --text-muted: #8A8580;
+      --accent: #5B82F0;
+      --accent-bg: #1A2240;
+      --green: #4CAF80;
+      --green-bg: #0D2B1C;
+      --red: #F07060;
+      --red-bg: #2A1008;
+      --amber: #E8A840;
+      --amber-bg: #2A1E06;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+    }
+  }
+
+  html { height: 100%; }
+
+  body {
+    font-family: system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px 48px;
+  }
+
+  header {
+    width: 100%;
+    max-width: 520px;
+    padding: 32px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  header h1 {
+    font-family: system-ui, serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  header p {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  #app {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  #quiz-screen { display: flex; flex-direction: column; gap: 12px; }
+  #result-screen { display: none; }
+
+  .progress-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2px;
+  }
+
+  .meta span {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .meta .score-badge {
+    background: var(--accent-bg);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .q-card {
+    padding: 28px 24px 24px;
+    text-align: center;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .q-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .q-text {
+    font-family: system-ui, serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .opt {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 14px 12px;
+    font-family: system-ui, sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.35;
+    transition: background 0.12s, border-color 0.12s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .opt:hover:not(:disabled):not(.wrong):not(.correct):not(.dim) {
+    background: var(--surface2);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .opt:active:not(:disabled):not(.wrong):not(.correct):not(.dim) {
+    transform: translateY(0);
+  }
+
+  .opt.correct {
+    background: var(--green-bg);
+    border-color: var(--green);
+    color: var(--green);
+    pointer-events: none;
+  }
+
+  .opt.wrong {
+    background: var(--red-bg);
+    border-color: var(--red);
+    color: var(--red);
+    pointer-events: none;
+    animation: shake 0.3s ease;
+  }
+
+  .opt.dim {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  .feedback {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 20px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .feedback.success { color: var(--green); }
+  .feedback.error { color: var(--red); }
+  .feedback.warning { color: var(--amber); }
+
+  .next-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .next-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .next-btn:active { opacity: 1; transform: translateY(0); }
+
+  .result-card {
+    padding: 36px 28px 28px;
+    text-align: center;
+  }
+
+  .result-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+
+  .result-title {
+    font-family: system-ui, serif;
+    font-size: 30px;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+
+  .result-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0 24px;
+  }
+
+  .stat {
+    flex: 1;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 14px 10px;
+  }
+
+  .stat-num {
+    font-family: system-ui, serif;
+    font-size: 28px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  .restart-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .restart-btn:hover { opacity: 0.9; }
+
+  .missed-section {
+    margin-top: 16px;
+    text-align: left;
+  }
+
+  .missed-header {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    padding: 0 2px;
+  }
+
+  .missed-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 6px;
+  }
+
+  .missed-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .missed-meaning {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  @media (max-width: 400px) {
+    header h1 { font-size: 24px; }
+    .q-text { font-size: 24px; }
+    .options { grid-template-columns: 1fr; }
+    .opt { padding: 13px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Quick! Clinical Signs</h1>
+  <p>Nursing &amp; medical exam prep — 18 essential signs</p>
+</header>
+
+<div id="app">
+  <div id="quiz-screen">
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="meta">
+      <span id="q-counter">Question 1 of 18</span>
+      <span class="score-badge" id="score-live">0 / 0</span>
+    </div>
+    <div class="card q-card">
+      <div class="q-label">What does this sign indicate?</div>
+      <div class="q-text" id="question"></div>
+    </div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="next-btn">Next question</button>
+  </div>
+
+  <div id="result-screen">
+    <div class="card result-card">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-num" id="stat-first"></div>
+          <div class="stat-label">First try</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-total"></div>
+          <div class="stat-label">Total attempts</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-pct"></div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="startQuiz()">Try again</button>
+      <div class="missed-section" id="missed-section"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const signs = [
+  { name: "Babinski Reflex", meaning: "Upper motor neuron lesion" },
+  { name: "Cushing's Triad", meaning: "Increased intracranial pressure" },
+  { name: "Kernig's Sign", meaning: "Meningitis" },
+  { name: "Brudzinski's Sign", meaning: "Meningitis" },
+  { name: "Romberg Test", meaning: "Cerebellar / proprioception deficit" },
+  { name: "Battle's Sign", meaning: "Basilar skull fracture" },
+  { name: "Murphy's Sign", meaning: "Cholecystitis" },
+  { name: "McBurney's Sign", meaning: "Appendicitis" },
+  { name: "Rovsing's Sign", meaning: "Appendicitis" },
+  { name: "Cullen's Sign", meaning: "Intra-abdominal bleed or pancreatitis" },
+  { name: "Beck's Triad", meaning: "Cardiac tamponade" },
+  { name: "Chvostek's Sign", meaning: "Hypocalcemia" },
+  { name: "Trousseau's Sign", meaning: "Hypocalcemia" },
+  { name: "Phalen's Test", meaning: "Carpal tunnel syndrome" },
+  { name: "Tinel's Sign", meaning: "Carpal tunnel syndrome" },
+  { name: "Chadwick's Sign", meaning: "Early pregnancy" },
+  { name: "Goodell's Sign", meaning: "Early pregnancy" },
+  { name: "Hegar's Sign", meaning: "Early pregnancy" },
+];
+
+let queue, idx, firstTryCorrect, totalAttempts, currentAttempts, gotCorrect, missedSigns;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getWrongOptions(correct, count) {
+  const pool = [...new Set(signs.filter(s => s.meaning !== correct).map(s => s.meaning))];
+  return shuffle(pool).slice(0, count);
+}
+
+function startQuiz() {
+  queue = shuffle(signs);
+  idx = 0; firstTryCorrect = 0; totalAttempts = 0; missedSigns = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'flex';
+  renderQ();
+}
+
+function updateMeta() {
+  document.getElementById('q-counter').textContent = 'Question ' + (idx + 1) + ' of ' + queue.length;
+  document.getElementById('score-live').textContent = firstTryCorrect + ' / ' + totalAttempts;
+  document.getElementById('progress-fill').style.width = Math.round((idx / queue.length) * 100) + '%';
+}
+
+function renderQ() {
+  currentAttempts = 0;
+  gotCorrect = false;
+  updateMeta();
+  const q = queue[idx];
+  document.getElementById('question').textContent = q.name;
+  const fb = document.getElementById('feedback');
+  fb.textContent = '';
+  fb.className = 'feedback';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const opts = shuffle([q.meaning, ...getWrongOptions(q.meaning, 3)]);
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  opts.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = o;
+    btn.addEventListener('click', () => handleAnswer(btn, o, q));
+    optDiv.appendChild(btn);
+  });
+}
+
+function handleAnswer(btn, chosen, q) {
+  if (gotCorrect) return;
+  currentAttempts++;
+  totalAttempts++;
+  updateMeta();
+
+  const fb = document.getElementById('feedback');
+
+  if (chosen === q.meaning) {
+    gotCorrect = true;
+    btn.classList.add('correct');
+    document.querySelectorAll('.opt:not(.correct)').forEach(b => b.classList.add('dim'));
+    if (currentAttempts === 1) {
+      firstTryCorrect++;
+      fb.textContent = 'Correct!';
+      fb.className = 'feedback success';
+    } else {
+      fb.textContent = 'Got it — took ' + currentAttempts + ' tries.';
+      fb.className = 'feedback warning';
+      missedSigns.push(q);
+    }
+    updateMeta();
+    const nb = document.getElementById('next-btn');
+    nb.style.display = 'block';
+    nb.textContent = idx + 1 < queue.length ? 'Next question →' : 'See results →';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = 'Not quite — try again!';
+    fb.className = 'feedback error';
+  }
+}
+
+document.getElementById('next-btn').addEventListener('click', () => {
+  idx++;
+  if (idx < queue.length) renderQ();
+  else showResults();
+});
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const pct = Math.round((firstTryCorrect / queue.length) * 100);
+  const icons = { 100: '★', 80: '✓', 60: '→', 0: '↻' };
+  const titles = { 100: 'Perfect score!', 80: 'Really solid!', 60: 'Getting there!', 0: 'Keep drilling!' };
+  const threshold = pct === 100 ? 100 : pct >= 80 ? 80 : pct >= 60 ? 60 : 0;
+  document.getElementById('result-icon').textContent = icons[threshold];
+  document.getElementById('result-title').textContent = titles[threshold];
+  document.getElementById('result-sub').textContent = firstTryCorrect + ' of ' + queue.length + ' correct on first try';
+  document.getElementById('stat-first').textContent = firstTryCorrect + '/' + queue.length;
+  document.getElementById('stat-total').textContent = totalAttempts;
+  document.getElementById('stat-pct').textContent = pct + '%';
+
+  const ms = document.getElementById('missed-section');
+  ms.innerHTML = '';
+  if (missedSigns.length > 0) {
+    ms.innerHTML = '<div style="height:1px;background:var(--border);margin:4px 0 20px;"></div><div class="missed-header">Needed multiple tries (' + missedSigns.length + ')</div>';
+    missedSigns.forEach(m => {
+      const d = document.createElement('div');
+      d.className = 'missed-item';
+      d.innerHTML = '<div class="missed-name">' + m.name + '</div><div class="missed-meaning">' + m.meaning + '</div>';
+      ms.appendChild(d);
+    });
+  }
+}
+
+startQuiz();
+</script>
+</body>
+</html>
