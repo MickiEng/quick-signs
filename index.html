@@ -26,7 +26,6 @@ body {
   gap: 1rem;
 }
 
-/* Title */
 .main-title {
   font-size: 1.4rem;
   font-weight: 800;
@@ -34,13 +33,11 @@ body {
   text-align: center;
 }
 
-/* Progress */
 .progress-wrap { width: 100%; display: flex; align-items: center; gap: 10px; }
 .prog-bar { flex: 1; height: 5px; background: #e0ddd6; border-radius: 3px; overflow: hidden; }
 .prog-fill { height: 100%; background: #1D9E75; border-radius: 3px; transition: width 0.4s ease; }
 .prog-lbl { font-size: 12px; color: #aaa; font-weight: 600; min-width: 36px; text-align: right; }
 
-/* Question card */
 .q-card {
   width: 100%;
   background: #fff;
@@ -83,7 +80,6 @@ canvas { position: absolute; inset: 0; pointer-events: none; border-radius: 16px
 .feedback-msg.ok  { color: #1D9E75; }
 .feedback-msg.err { color: #e24b4a; }
 
-/* Answer grid — 2 columns (answers are longer text) */
 .ans-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -112,13 +108,6 @@ canvas { position: absolute; inset: 0; pointer-events: none; border-radius: 16px
   transform: translateY(-1px);
 }
 
-.abtn.selected {
-  background: #111;
-  border-color: #111;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-}
-
 .abtn.confirmed {
   background: #e1f5ee;
   border-color: #1D9E75;
@@ -142,48 +131,9 @@ canvas { position: absolute; inset: 0; pointer-events: none; border-radius: 16px
   75% { transform: translateX(6px); }
 }
 
-/* Action buttons row */
-.action-row {
-  display: flex;
-  gap: 8px;
-  width: 100%;
-}
-
-.clear-btn {
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1.5px solid #ddd;
-  background: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  color: #888;
-  cursor: pointer;
-  transition: background 0.12s, border-color 0.12s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.clear-btn:hover { background: #f8f7f4; border-color: #bbb; }
-
-.submit-btn {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  border: none;
-  background: #111;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
-}
-.submit-btn:hover { background: #333; transform: translateY(-1px); }
-.submit-btn:active { transform: translateY(0); }
-
-/* Score */
 .score { font-size: 13px; color: #999; }
 .score b { color: #555; }
 
-/* ---- Results ---- */
 .results-card {
   width: 100%;
   background: #fff;
@@ -208,7 +158,6 @@ canvas { position: absolute; inset: 0; pointer-events: none; border-radius: 16px
 .accuracy-lbl { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 6px; font-weight: 600; }
 .remark { font-size: 14px; color: #555; text-align: center; font-weight: 500; }
 
-/* Missed signs review */
 .missed-wrap { width: 100%; }
 .missed-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; margin-bottom: 8px; }
 .missed-item { background: #f8f7f4; border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
@@ -221,49 +170,30 @@ canvas { position: absolute; inset: 0; pointer-events: none; border-radius: 16px
 </head>
 <body>
 
-<!-- QUIZ VIEW -->
 <div class="wrap" id="quizView">
   <div class="main-title">Quick! Clinical Signs</div>
-
   <div class="progress-wrap">
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
     <div class="prog-lbl" id="progLbl">0 / 18</div>
   </div>
-
   <div class="q-card" id="qCard">
     <canvas id="cv"></canvas>
     <div class="q-label">What does this sign indicate?</div>
     <div class="q-display" id="qDisplay">—</div>
     <div class="feedback-msg" id="feedbackMsg"></div>
   </div>
-
   <div class="ans-grid" id="ansGrid"></div>
-
-  <div class="action-row">
-    <button class="submit-btn" onclick="handleSubmit()">Submit</button>
-  </div>
-
   <div class="score">Correct: <b id="sc">0</b> &nbsp;/&nbsp; Attempts: <b id="at">0</b></div>
 </div>
 
-<!-- RESULTS VIEW -->
 <div class="wrap" id="resultsView" style="display:none;">
   <div class="results-card">
     <div style="font-size:2rem;">🩺</div>
     <h2>Round Complete!</h2>
     <div class="stat-row">
-      <div class="stat-box green">
-        <div class="num" id="rCorrect">—</div>
-        <div class="lbl">First-try correct</div>
-      </div>
-      <div class="stat-box red">
-        <div class="num" id="rMissed">—</div>
-        <div class="lbl">Needed retries</div>
-      </div>
-      <div class="stat-box">
-        <div class="num" id="rAttempts">—</div>
-        <div class="lbl">Total attempts</div>
-      </div>
+      <div class="stat-box green"><div class="num" id="rCorrect">—</div><div class="lbl">First-try correct</div></div>
+      <div class="stat-box red"><div class="num" id="rMissed">—</div><div class="lbl">Needed retries</div></div>
+      <div class="stat-box"><div class="num" id="rAttempts">—</div><div class="lbl">Total attempts</div></div>
     </div>
     <div class="accuracy-bar-wrap">
       <div class="accuracy-lbl"><span>Accuracy</span><span id="rPct">—</span></div>
@@ -271,7 +201,7 @@ canvas { position: absolute; inset: 0; pointer-events: none; border-radius: 16px
     </div>
     <div class="remark" id="rRemark">—</div>
     <div class="missed-wrap" id="missedWrap"></div>
-    <button class="replay-btn" onclick="restart()">Play Again</button>
+    <button class="replay-btn" onclick="init()">Play Again</button>
   </div>
 </div>
 
@@ -297,13 +227,9 @@ var SIGNS = [
   { name: "Hegar's Sign",      meaning: "Early pregnancy" },
 ];
 
-var deck = [], idx = 0, sc = 0, at = 0, firstTryCorrect = 0;
-var currentWasWrong = false;
-var missedSigns = [];
-var particles = [], raf = null;
-
-// Per-question: the 4 options shown (1 correct + 3 wrong)
+var deck, idx, sc, at, firstTryCorrect, currentWasWrong, missedSignsList, questionNeedsRetry;
 var currentOptions = [];
+var particles = [], raf = null;
 
 function shuffle(arr) {
   var a = arr.slice();
@@ -314,32 +240,29 @@ function shuffle(arr) {
   return a;
 }
 
-function getBtnId(meaning) {
-  return 'abtn-' + meaning.replace(/[^a-zA-Z0-9]/g, '_');
-}
-
 function getWrongOptions(correct, count) {
-  var pool = SIGNS
-    .filter(function(s) { return s.meaning !== correct; })
-    .map(function(s) { return s.meaning; });
-  // dedupe
+  var pool = SIGNS.filter(function(s) { return s.meaning !== correct; })
+                  .map(function(s) { return s.meaning; });
   pool = pool.filter(function(v, i, a) { return a.indexOf(v) === i; });
   return shuffle(pool).slice(0, count);
+}
+
+function getBtnId(meaning) {
+  return 'abtn-' + meaning.replace(/[^a-zA-Z0-9]/g, '_');
 }
 
 function init() {
   deck = shuffle(SIGNS);
   idx = 0; sc = 0; at = 0; firstTryCorrect = 0;
-  currentWasWrong = false; missedSigns = [];
-  loadQuestion();
-  updateScore();
+  currentWasWrong = false; missedSignsList = []; questionNeedsRetry = {};
   document.getElementById('quizView').style.display = 'flex';
   document.getElementById('resultsView').style.display = 'none';
+  loadQuestion();
+  updateScore();
 }
 
 function updateProgress() {
-  var pct = Math.round((idx / deck.length) * 100);
-  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progFill').style.width = Math.round((idx / deck.length) * 100) + '%';
   document.getElementById('progLbl').textContent = idx + ' / ' + deck.length;
 }
 
@@ -362,7 +285,6 @@ function loadQuestion() {
   var q = deck[idx];
   document.getElementById('qDisplay').textContent = q.name;
 
-  // Build 4 options: correct + 3 distractors
   var wrongs = getWrongOptions(q.meaning, 3);
   currentOptions = shuffle([q.meaning].concat(wrongs));
 
@@ -373,63 +295,34 @@ function loadQuestion() {
     btn.className = 'abtn';
     btn.id = getBtnId(opt);
     btn.textContent = opt;
-    btn.onclick = function() { selectAnswer(opt, btn); };
+    btn.onclick = function() { handleTap(opt, btn); };
     grid.appendChild(btn);
   });
 }
 
-function selectAnswer(opt, btn) {
-  // Only one can be selected at a time; deselect others that aren't locked
-  currentOptions.forEach(function(o) {
-    var b = document.getElementById(getBtnId(o));
-    if (b && !b.classList.contains('confirmed') && !b.classList.contains('wrong-hl')) {
-      b.classList.remove('selected');
-    }
-  });
-  if (!btn.classList.contains('confirmed') && !btn.classList.contains('wrong-hl')) {
-    btn.classList.add('selected');
-  }
-}
+function handleTap(chosen, btn) {
+  var q = deck[idx];
+  if (btn.classList.contains('confirmed') || btn.classList.contains('wrong-hl')) return;
 
-function clearSelection() {
-  currentOptions.forEach(function(o) {
-    var b = document.getElementById(getBtnId(o));
-    if (b && !b.classList.contains('confirmed') && !b.classList.contains('wrong-hl')) {
-      b.classList.remove('selected');
-    }
-  });
-  setFeedback('', '');
-}
-
-function getSelected() {
-  return currentOptions.filter(function(o) {
-    var b = document.getElementById(getBtnId(o));
-    return b && b.classList.contains('selected');
-  });
-}
-
-function handleSubmit() {
-  var selected = getSelected();
-  if (selected.length === 0) {
-    setFeedback('Pick an answer first!', 'err');
-    return;
-  }
-
-  var correct = deck[idx].meaning;
-  var chosen = selected[0];
   at++;
   updateScore();
 
-  if (chosen === correct) {
-    // Correct
-    if (!currentWasWrong) { firstTryCorrect++; sc++; }
-    else { sc++; }
+  if (chosen === q.meaning) {
+    if (!currentWasWrong) {
+      firstTryCorrect++;
+      sc++;
+    } else {
+      sc++;
+      if (!questionNeedsRetry[q.name]) {
+        questionNeedsRetry[q.name] = true;
+        missedSignsList.push(q);
+      }
+    }
 
-    // Mark correct green, disable others
+    btn.className = 'abtn confirmed';
     currentOptions.forEach(function(o) {
       var b = document.getElementById(getBtnId(o));
-      if (o === correct) { b.className = 'abtn confirmed'; }
-      else { b.className = 'abtn'; b.disabled = true; }
+      if (o !== q.meaning) { b.className = 'abtn'; b.disabled = true; }
     });
 
     setFeedback('Correct! ✓', 'ok');
@@ -444,12 +337,8 @@ function handleSubmit() {
     }, 1400);
 
   } else {
-    // Wrong
     currentWasWrong = true;
-
-    var chosenBtn = document.getElementById(getBtnId(chosen));
-    chosenBtn.className = 'abtn wrong-hl';
-
+    btn.className = 'abtn wrong-hl';
     setFeedback('Not quite — try again!', 'err');
   }
 }
@@ -459,7 +348,6 @@ function showResults() {
   var missed = deck.length - firstTryCorrect;
   var pct = Math.round((firstTryCorrect / deck.length) * 100);
   var barColor = pct === 100 ? '#1D9E75' : pct >= 75 ? '#378ADD' : pct >= 50 ? '#EF9F27' : '#e24b4a';
-
   var remarks = [
     [100, 'Perfect — every sign, no hesitation!'],
     [83,  'Really strong — just a couple of slip-ups.'],
@@ -480,12 +368,8 @@ function showResults() {
   document.getElementById('rBar').style.background = barColor;
   document.getElementById('rRemark').textContent = remark;
 
-  // Build missed-signs list — signs that needed retries
   var mw = document.getElementById('missedWrap');
   mw.innerHTML = '';
-
-  // Track which signs were missed (needed more than 1 attempt)
-  // We stored missed signs during quiz
   if (missedSignsList.length > 0) {
     mw.innerHTML = '<div style="height:1px;background:#e0ddd6;margin:0 0 12px;"></div><div class="missed-header">Needed multiple tries (' + missedSignsList.length + ')</div>';
     missedSignsList.forEach(function(s) {
@@ -500,84 +384,6 @@ function showResults() {
   document.getElementById('resultsView').style.display = 'flex';
 }
 
-// Track signs that needed retries
-var missedSignsList = [];
-
-// Override init to reset missedSignsList
-var _origInit = init;
-init = function() {
-  missedSignsList = [];
-  _origInit();
-};
-
-// Override handleSubmit to track missed signs
-var _origHandleSubmit = handleSubmit;
-// Patch: track when a question needed retries
-var questionNeedsRetry = {};
-handleSubmit = function() {
-  var selected = getSelected();
-  if (selected.length === 0) {
-    setFeedback('Pick an answer first!', 'err');
-    return;
-  }
-
-  var q = deck[idx];
-  var correct = q.meaning;
-  var chosen = selected[0];
-  at++;
-  updateScore();
-
-  if (chosen === correct) {
-    if (!currentWasWrong) {
-      firstTryCorrect++;
-      sc++;
-    } else {
-      sc++;
-      // Was wrong before — add to missed list if not already there
-      if (!questionNeedsRetry[q.name]) {
-        questionNeedsRetry[q.name] = true;
-        missedSignsList.push(q);
-      }
-    }
-
-    currentOptions.forEach(function(o) {
-      var b = document.getElementById(getBtnId(o));
-      if (o === correct) { b.className = 'abtn confirmed'; }
-      else { b.className = 'abtn'; b.disabled = true; }
-    });
-
-    setFeedback('Correct! ✓', 'ok');
-    updateScore();
-    confetti();
-
-    setTimeout(function() {
-      stopConfetti();
-      idx++;
-      if (idx >= deck.length) showResults();
-      else {
-        currentWasWrong = false;
-        loadQuestion();
-      }
-    }, 1400);
-
-  } else {
-    currentWasWrong = true;
-    var chosenBtn = document.getElementById(getBtnId(chosen));
-    chosenBtn.className = 'abtn wrong-hl';
-    setFeedback('Not quite — try again!', 'err');
-  }
-};
-
-// Also reset questionNeedsRetry on init
-var _init2 = init;
-init = function() {
-  questionNeedsRetry = {};
-  _init2();
-};
-
-function restart() { init(); }
-
-// Confetti (identical to 42)
 function confetti() {
   var cv = document.getElementById('cv'), card = document.getElementById('qCard');
   cv.width = card.offsetWidth; cv.height = card.offsetHeight;
